@@ -58,10 +58,10 @@ function HeaderLoggedOut(props) {
                     const response = await Axios.post("/login", { username: state.username.value, password: state.password.value }, { CancelToken: ourRequest.token })
                     if (response.data) {
                         appDispatch({ type: "login", data: response.data })
-                        appDispatch({ type: "flashMessage", value: "You have successfully logged in." })
+                        appDispatch({ type: "flashMessage", value: "You have successfully logged in.", messageType: "success" })
                     } else {
                         console.log("Incorrect username/password")
-                        appDispatch({ type: "flashMessage", value: "Invalid username/password." })
+                        appDispatch({ type: "flashMessage", value: "Invalid username/password.", messageType: "danger" })
                     }
                 } catch (e) {
                     console.log("There was an error - " + e.response.data)
