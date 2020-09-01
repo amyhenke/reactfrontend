@@ -8,6 +8,7 @@ import { useImmer } from "use-immer"
 import ProfileFollowers from "./ProfileFollowers"
 import ProfileFollowing from "./ProfileFollowing"
 import ProfileFollow from "./ProfileFollow"
+import NotFound from "./NotFound"
 
 function Profile() {
     const { username } = useParams()
@@ -21,7 +22,8 @@ function Profile() {
             profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
             isFollowing: false,
             counts: { postCount: "", followerCount: "", followingCount: "" }
-        }
+        },
+        notFound: false
     })
 
     useEffect(() => {
@@ -31,7 +33,11 @@ function Profile() {
             try {
                 const response = await Axios.post(`/profile/${username}`, { token: appState.user.token }, { cancelToken: ourRequest.token })
                 setState(draft => {
-                    draft.profileData = response.data
+                    if (response.data) {
+                        draft.profileData = response.data
+                    } else {
+                        draft.notFound = true
+                    }
                 })
             } catch (e) {
                 console.log("There was a problem.")
@@ -108,6 +114,13 @@ function Profile() {
             }
         }
     }, [state.stopFollowingRequestCount])
+
+    if (state.notFound)
+        return (
+            <Page title="Page Not Found">
+                <NotFound />
+            </Page>
+        )
 
     return (
         <Page title="Profile Screen">
